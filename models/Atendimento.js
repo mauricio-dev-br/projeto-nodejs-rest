@@ -35,12 +35,64 @@ class Atendimento {
                 if(erro){
                     res.status(400).json(erro)
                 } else {
-                    res.status(201).json(resultados)
+                    res.status(201).json(atendimentoDatado)
                 }
             })
         }
 
         
+    }
+
+    lista(res){
+        const sql = 'SELECT * FROM Atendimentos'
+
+        conexao.query(sql, (erro, resultados) => {
+            if(erro){
+                res.status(400).json(erro)
+            } else {
+                res.status(200).json(resultados)
+            }
+        })
+    }
+
+    buscarPorId(res, id){
+        const sql = `SELECT * FROM Atendimentos WHERE id=${id}`
+
+        conexao.query(sql, (erro, resultado) => {
+            if(erro){
+                res.status(400).json(erro)
+            } else {
+                res.status(200).json(resultado[0])
+            }
+        })
+    }
+
+    altera(res, id, valores){
+        if(valores.data){
+            valores.data = moment(valores.data, "DD/MM/YYYY").format('YYYY-MM-DD HH:MM:SS')
+        }
+
+        const sql = 'UPDATE Atendimentos SET ? WHERE id=?'
+
+        conexao.query(sql, [valores, id], (erro, resultado) => {
+            if(erro){
+                res.status(400).json(erro)
+            } else {
+                res.status(200).json(...valores)
+            }
+        })
+    }
+
+    deleta(res, id){
+        const sql = 'DELETE FROM Atendimentos WHERE id=?'
+
+        conexao.query(sql, id, (erro, resultado) => {
+            if(erro){
+                res.status(400).json(erro)
+            } else {
+                res.status(200).json({id: id})
+            }
+        })
     }
 }
 
